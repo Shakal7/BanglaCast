@@ -16,9 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
 from Podcast import views as p_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', p_views.Podcast, name='Podcast'),
+    path('', p_views.First_page, name='Explore'),
+    path('home', p_views.home, name='home'),
+    path('signup', p_views.signUp, name='signup'),
+    path('login', p_views.Login, name='login'),
+    path('userPage', p_views.userPage, name='userPage'),
+    path('ArtistPage', p_views.ArtistPage, name='ArtistPage'),
+    path('Episode', p_views.Episode, name='Episode'),
+
+
 ]
+
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -10,6 +10,7 @@ class Episode(models.Model):
     Like = models.IntegerField(blank=True, null=True)
     Share = models.IntegerField(blank=True, null=True)
     Download = models.IntegerField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
 
     def __str__(self):
         return self.Title
