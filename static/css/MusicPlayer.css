@@ -1,0 +1,238 @@
+:root {
+  --blue: #112132;
+  --white: #fff;
+  --yellow: #fbc14c;
+  --green: #1CD123;
+  --red: #F40F0F;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--blue);
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  height: 83vh;
+}
+
+.container .navbar {
+  display: flex;
+  align-items: center;
+  height: 70px;
+  padding: 0 10%;
+}
+
+.navbar .logo {
+  color: var(--green);
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-right: 2rem;
+}
+
+.navbar .navbar__items {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar__items ul {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  color: var(--white);
+}
+
+ul li {
+  margin: 0 1rem;
+  cursor: pointer;
+}
+
+li.cta {
+  background: var(--white);
+  padding: 0px 4rem;
+  margin-left: 0;
+  border: 2px solid var(--white);
+  border-radius: 20px;
+  font-weight: 0;
+  transition: 0.5s ease-in-out;
+  color: var(--blue);
+}
+
+<li class="cta1"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAHhJREFUSEtjZBggwDhA9jKMWky3kB8NanBQ//z5uYGaYc7OzothHtag/vXz839qWszGzothz+CymJq+xWXWaKoGh8zv758dqBncrJy8B9DNG1yJa8Cy04AFNTXjdzQ7wUJgNFUPbLU4mqppEQKj1SItQhWrmQMW1ABmhigf4i7qRQAAAABJRU5ErkJggg=="/></li>
+
+li.cta:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+
+/* music plyer*/
+
+.music-player {
+    --primary-color: #ddd;
+    --secondary-color: #999;
+    --green-color: #2d5;
+    --padding: 1em;
+    background-color: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-radius : 45px;
+    margin-left: 150px;
+    margin-right: 150px;
+
+    height: 7rem;
+
+
+    padding: var(--padding);
+    color: var(--primary-color);
+    bottom: 0em;
+}
+
+
+i{
+    color: var(--secondary-color);
+}
+i:hover{
+    color: var(--primary-color);
+}
+.song-bar {
+    position: absolute;
+    left: var(--padding);
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0rem;
+    width: 20%;
+}
+
+.song-infos {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+.image-container {
+    --size: 4.5em;
+    flex-shrink: 0;
+    width: var(--size);
+    height: var(--size);
+    border-radius : 10px;
+}
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.song-description p {
+    margin: 0.1em;
+}
+.title,
+.artist {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+.title:hover,
+.artist:hover {
+    text-decoration: underline;
+}
+.artist{
+    color: var(--secondary-color);
+}
+
+.progress-controller{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5em;
+    color: var(--secondary-color);
+}
+.control-buttons{
+    display: flex;
+    align-items: center;
+    gap: 2em;
+}
+.play-pause{
+    display: inline-block;
+    padding: 1em;
+    background-color: var(--primary-color);
+    color: #111;
+    border-radius: 50%;
+}
+.play-pause:hover{
+    transform: scale(1.1);
+    color: #111;
+}
+.progress-container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+.progress-bar{
+    height: 4px;
+    border-radius: 10px;
+    width: 30%;
+    background-color: #ccc4;
+}
+.progress{
+    position: relative;
+    height: 100%;
+    width: 30%;
+    border-radius: 10px;
+    background-color: var(--secondary-color);
+}
+.progress-bar:hover .progress{
+    background-color: var(--green-color);
+}
+.progress-bar:hover .progress::after{
+    content: "";
+    position: absolute;
+    --size: 1em;
+    width: var(--size);
+    height: var(--size);
+    right: 0;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    transform: translate(50%, calc(2px - 50%));
+}
+.other-features{
+    position: absolute;
+    right: var(--padding);
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    display: flex;
+
+
+}
+.volume-bar{
+    display: flex;
+    align-items: center;
+    gap: .7em;
+}
+.volume-bar .progress-bar{
+    width: 6em;
+}
+.volume-bar .progress-bar:hover .progress::after{
+    --size: .8em;
+}
