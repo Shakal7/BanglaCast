@@ -54,3 +54,9 @@ def ArtistPage(request):
 
 def Episode(request):
     return render(request, template_name='PodCast/Episode.html')
+
+
+def MusicPlayer(request):
+    return render(request, template_name='PodCast/MusicPlayer.html')
+
+

@@ -29,6 +29,7 @@ urlpatterns = [
     path('userPage', p_views.userPage, name='userPage'),
     path('ArtistPage', p_views.ArtistPage, name='ArtistPage'),
     path('Episode', p_views.Episode, name='Episode'),
+    path('MusicPlayer', p_views.MusicPlayer, name='MusicPlayer'),
 
 
 ]
