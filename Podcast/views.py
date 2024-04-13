@@ -15,21 +15,23 @@ def First_page(request):
 
 
 def home(request):
-    return render(request, template_name='PodCast/home.html')
+    Home = home.objects.all()
+    context = {
+        'home': Home,
+    }
+    return render(request, template_name='PodCast/home.html', context=context)
 
 
 def signUp(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            email = form.cleaned_data.get('email')
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('pas')
-            pas_confirm = form.cleaned_data.get('pas-confirm')
-            user = authenticate(emai=email, username=username, pas=password, pas_confirm=pas_confirm)
+        email = request.POST['email']
+        username = request.POST['username']
+        password = request.POST['pas']
+        pas_confirm = request.POST['pas-confirm']
+        user = User.objects.create_user(email=email, username=username, password=password)
+        user.save()
 
-        return redirect('login')
+    # return redirect('login')
     return render(request, 'PodCast/signup.html')
 
 
@@ -49,14 +51,29 @@ def userPage(request):
 
 
 def ArtistPage(request):
+
     return render(request, template_name='PodCast/ArtistPage.html')
 
 
-def Episode(request):
-    return render(request, template_name='PodCast/Episode.html')
+def episode_page(request):
+    episode = Episode.objects.all()
+    context = {
+        'episode': episode,
+    }
+    return render(request, template_name='PodCast/Episode.html',context=context)
 
 
 def MusicPlayer(request):
-    return render(request, template_name='PodCast/MusicPlayer.html')
+    player = MusicPlayer.objects.all()
+    context = {
+        'MusicPlayer': player,
+    }
+    return render(request, template_name='PodCast/MusicPlayer.html',context=context)
 
 
+def Creator_Page(request):
+    creator = Creator.objects.all()
+    context = {
+        'Creator': creator,
+    }
+    return render(request, template_name='PodCast/Creator.html',context=context)

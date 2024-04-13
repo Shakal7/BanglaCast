@@ -28,8 +28,9 @@ urlpatterns = [
     path('login', p_views.Login, name='login'),
     path('userPage', p_views.userPage, name='userPage'),
     path('ArtistPage', p_views.ArtistPage, name='ArtistPage'),
-    path('Episode', p_views.Episode, name='Episode'),
+    path('Episode', p_views.episode_page, name='Episode'),
     path('MusicPlayer', p_views.MusicPlayer, name='MusicPlayer'),
+    path('Creator', p_views.Creator_Page, name='Creator'),
 
 
 ]

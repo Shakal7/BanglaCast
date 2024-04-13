@@ -15,6 +15,17 @@ class Episode(models.Model):
     def __str__(self):
         return self.Title
 
+class Creator(models.Model):
+    Title = models.CharField(max_length=200)
+    # Duration = models.PositiveIntegerField()
+    Like = models.IntegerField(blank=True, null=True)
+    Share = models.IntegerField(blank=True, null=True)
+    Download = models.IntegerField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
+
+    def __str__(self):
+        return self.Title
+
 
 class Playlist(models.Model):
     l_title = models.CharField(max_length=200)
@@ -30,9 +41,12 @@ class Playlist(models.Model):
         return self.l_title
 
 
-# class Player(models.Model):
-#     Volume = models.FloatField()
-#     Current_Audio_Index = models.ImageField(blank=True, null=True)
+class Player(models.Model):
+    volume = models.FloatField(default=0.5)  # Volume level, default to 0.5
+    current_audio_index = models.PositiveIntegerField(blank=True,
+                                                      null=True)  # Index of the currently playing audio, can be blank initially
+    is_playing = models.BooleanField(default=False)
+
 
 
 class Premium(models.Model):
