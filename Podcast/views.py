@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -14,11 +15,16 @@ def First_page(request):
     return render(request, template_name='PodCast/First_page.html')
 
 
+def base(request):
+    return render(request, 'PodCast/base.html')
+
+
 def home(request):
-    Home = home.objects.all()
+    epi = Episode.objects.all()
     context = {
-        'home': Home,
+        'epi': epi,
     }
+
     return render(request, template_name='PodCast/home.html', context=context)
 
 
@@ -47,11 +53,10 @@ def Login(request):
 
 
 def userPage(request):
-    return render(request, template_name='PodCast/user_page.html')
+    return render(request, template_name='PodCast/userPage.html')
 
 
 def ArtistPage(request):
-
     return render(request, template_name='PodCast/ArtistPage.html')
 
 
@@ -60,15 +65,15 @@ def episode_page(request):
     context = {
         'episode': episode,
     }
-    return render(request, template_name='PodCast/Episode.html',context=context)
+    return render(request, template_name='PodCast/Episode.html', context=context)
 
 
-def MusicPlayer(request):
-    player = MusicPlayer.objects.all()
+def player(request, id):
+    player = Episode.objects.get(pk=id)
     context = {
-        'MusicPlayer': player,
+        'player': player,
     }
-    return render(request, template_name='PodCast/MusicPlayer.html',context=context)
+    return render(request, template_name='PodCast/audio.html', context=context)
 
 
 def Creator_Page(request):
@@ -76,4 +81,13 @@ def Creator_Page(request):
     context = {
         'Creator': creator,
     }
-    return render(request, template_name='PodCast/Creator.html',context=context)
+    return render(request, template_name='PodCast/Creator.html', context=context)
+
+
+def index(request):
+    queryset = Audio.objects.all().order_by('title')
+    paginator = Paginator(queryset, 1)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {"page_obj": page_obj}
+    return render(request, 'PodCast/index.html', context)

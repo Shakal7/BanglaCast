@@ -1,0 +1,66 @@
+
+{% load static %}
+
+
+<!--} class="container" style="" background: blue xmlns:background="http://www.w3.org/1999/xhtml">&ndash;&gt;-->
+<!--  <div class="row">-->
+<!--    <div class="col-md-6" style="padding-top:7%; padding-left:7%">-->
+<!--      <img src="/media/{{player.image}}" alt="" height="200px" width="300px">-->
+<!--    </div>-->
+<!--    <div class="col-md-6" style ="padding-top:1%;padding-left:7% ;font size= 3rm">-->
+<!--      <h2> {{player.Title}}</h2>-->
+<!--      <h2> {{player.Artist}}</h2>-->
+<!--      <h2>{{player.Type}}</h2>-->
+<!--      <audio controls >-->
+<!--        <source src="/media/{{player.audio_files}}" type="">-->
+<!--      </audio>-->
+
+<!--    </div>-->
+<!--  </div>-->
+
+<!--</div>-->
+
+
+
+<div class="container">
+ <div class="row">
+    <div class="col-md-6" style="padding-top:7%; padding-left:37%">
+      <img src="/media/{{player.image}}" alt="" height="200px" width="300px">
+    </div>
+    <div class="col-md-6" style ="padding-top:1%;padding-left:37% ;font size= 3rm">
+      <h2> {{player.Title}}</h2>
+      <h2> {{player.Artist}}</h2>
+      <h2>{{player.Type}}</h2>
+      <audio controls>
+        <source src="/media/{{player.audio_files}}" type="">
+      </audio>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!--<div class="card" style="width: 14rem;">-->
+<!--        <h2 style="padding-left: 4%; padding-top: 4%"></h2>-->
+<!--<div style="text-align: center; padding-top: 1%; padding-left: 4%">-->
+<!--  <div style="padding-left: 2%; padding-top: 2%">-->
+<!--        {% if player.image %}-->
+<!--  <img class="card-img-top" src="{{player.image.url}}" alt="Card image cap">-->
+<!--        {% endif %}-->
+<!--  <div class="card-body">-->
+<!--    <h5 class="card-title">{{player.Title}}</h5>-->
+<!--    <h5 class="card-title">{{player.Artist}}</h5>-->
+<!--    <h5 class="card-title">{{player.Type}}</h5>-->
+<!--  </div>-->
+<!--</div>-->
+<!--  </div>-->
+
+
+<!--</div>-->

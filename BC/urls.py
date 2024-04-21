@@ -22,17 +22,18 @@ from Podcast import views as p_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', p_views.First_page, name='Explore'),
+    path('explore/', p_views.First_page, name='Explore'),
+    path('', p_views.base, name='base'),
     path('home', p_views.home, name='home'),
+    path('/<str:id>', p_views.player, name='player'),
     path('signup', p_views.signUp, name='signup'),
     path('login', p_views.Login, name='login'),
     path('userPage', p_views.userPage, name='userPage'),
-    path('ArtistPage', p_views.ArtistPage, name='ArtistPage'),
-    path('Episode', p_views.episode_page, name='Episode'),
-    path('MusicPlayer', p_views.MusicPlayer, name='MusicPlayer'),
-    path('Creator', p_views.Creator_Page, name='Creator'),
-
+    path('ArtistPage/', p_views.ArtistPage, name='ArtistPage'),
+    path('Episode/', p_views.episode_page, name='Episode'),
+    # path('MusicPlayer/', p_views.MusicPlayer, name='MusicPlayer'),
+    path('Creator/', p_views.Creator_Page, name='Creator'),
 
 ]
 
-# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

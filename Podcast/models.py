@@ -6,14 +6,15 @@ from django.contrib.auth.models import User
 
 class Episode(models.Model):
     Title = models.CharField(max_length=200)
-    # Duration = models.PositiveIntegerField()
-    Like = models.IntegerField(blank=True, null=True)
-    Share = models.IntegerField(blank=True, null=True)
-    Download = models.IntegerField(blank=True, null=True)
+    Artist = models.CharField(max_length=200, blank=True, null=True)
+    Type = models.CharField(max_length=200, blank=True, null=True)
     image = models.ImageField(blank=True, null=True)
+    audio_files = models.FileField(upload_to='images',  blank=True, null=True)
+
 
     def __str__(self):
         return self.Title
+
 
 class Creator(models.Model):
     Title = models.CharField(max_length=200)
@@ -29,16 +30,30 @@ class Creator(models.Model):
 
 class Playlist(models.Model):
     l_title = models.CharField(max_length=200)
-    Type_choice = (
-        ('Story', 'Story'),
-        ('Business', 'Business'),
-        ('Sports', 'Sports'),
-        ('Education', 'Education'),
-    )
-    Type = models.CharField(max_length=100, choices=Type_choice, blank=True, null=True)
+    # Type_choice = (
+    #     ('Story', 'Story'),
+    #     ('Business', 'Business'),
+    #     ('Sports', 'Sports'),
+    #     ('Education', 'Education'),
+    # )
+    Type = models.CharField(max_length=100, blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
 
     def __str__(self):
         return self.l_title
+
+
+# class Audio(models.Model):
+#     title = models.TextField()
+#     artist = models.TextField()
+#     image = models.ImageField()
+#     audio_file = models.FileField(blank=True, null=True)
+#     lyrics = models.TextField(blank=True, null=True)
+#     duration = models.CharField(max_length=20)
+#     # paginate_by = 2
+
+# def __str__(self):
+#     return self.title
 
 
 class Player(models.Model):
@@ -46,7 +61,6 @@ class Player(models.Model):
     current_audio_index = models.PositiveIntegerField(blank=True,
                                                       null=True)  # Index of the currently playing audio, can be blank initially
     is_playing = models.BooleanField(default=False)
-
 
 
 class Premium(models.Model):
@@ -58,9 +72,13 @@ class Premium(models.Model):
         return self.Type
 
 
-class Subscription(models.Model):
-    user_name = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    Sub_date = models.DateTimeField(auto_now_add=True, auto_now=False)
+class Audio(models.Model):
+    title = models.TextField(max_length=200)
+    image = models.ImageField()
+    audio_file = models.FileField(blank=True, null=True)
+    lyrics = models.TextField(blank=True, null=True)
+    duration = models.CharField(max_length=20)
+    paginate_by = 2
 
-    def __int__(self):
-        return self.user_name
+    def __str__(self):
+        return self.title
