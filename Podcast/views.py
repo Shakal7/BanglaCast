@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import UserManager
 from .models import *
+from .forms import *
 
 
 # Create your views here.
@@ -26,6 +27,19 @@ def home(request):
     }
 
     return render(request, template_name='PodCast/home.html', context=context)
+
+
+def upload_episode(request):
+    form = EpisodeForm()
+    if request.method == 'POST':
+        form = EpisodeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    context = {
+        'form': form
+    }
+    return render(request, template_name='PodCast/upload_episode.html', context=context)
 
 
 def signUp(request):
@@ -74,6 +88,17 @@ def player(request, id):
         'player': player,
     }
     return render(request, template_name='PodCast/audio.html', context=context)
+
+
+def delete_epi(request, id):
+    epi = Episode.objects.get(pk=id)
+    if request.method == 'POST':
+        epi.delete()
+        return redirect('home')
+    context = {'epi': epi}
+
+    return render(request, template_name='PodCast/delete_epi.html', context=context)
+
 
 
 def Creator_Page(request):
