@@ -8,7 +8,7 @@ class Episode(models.Model):
     Title = models.CharField(max_length=200)
     Artist = models.CharField(max_length=200, blank=True, null=True)
     Type = models.CharField(max_length=200, blank=True, null=True)
-    image = models.ImageField(upload_to='images', blank=True, null=True)
+    image = models.ImageField(upload_to='images', blank=True, null=True, default='image/default.jpg')
     audio_files = models.FileField(upload_to='images',  blank=True, null=True)
 
 
