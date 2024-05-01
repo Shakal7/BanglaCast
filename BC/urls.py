@@ -22,14 +22,14 @@ from Podcast import views as p_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('explore/', p_views.First_page, name='Explore'),
+    path('', p_views.First_page, name='First_page'),
+    path('signup/<str:user_type>/', p_views.signup, name='signup'),
+    path('login', p_views.Login, name='login'),
     # path('', p_views.base, name='base'),
-    path('', p_views.home, name='home'),
+    path('home', p_views.home, name='home'),
     path('upload_episode/', p_views.upload_episode, name='upload_episode'),
     path('player/<str:id>', p_views.player, name='player'),
     path('delete_epi/<str:id>', p_views.delete_epi, name='delete_epi'),
-    path('signup', p_views.signUp, name='signup'),
-    path('login', p_views.Login, name='login'),
     path('userPage', p_views.userPage, name='userPage'),
     path('ArtistPage/', p_views.ArtistPage, name='ArtistPage'),
     path('Episode/', p_views.episode_page, name='Episode'),

@@ -5,6 +5,29 @@
 
     <title>Title</title>
 
+
+<!--<form method="POST" action="{% url 'login' %}">-->
+<!--    {% csrf_token %}-->
+
+<!--    {{ form.username.label_tag }}-->
+<!--    {{ form.username }}-->
+
+<!--    {{ form.email.label_tag }}-->
+<!--    {{ form.email }}-->
+
+<!--    {{ form.password1.label_tag }}-->
+<!--    {{ form.password1 }}-->
+
+<!--    {{ form.password2.label_tag }}-->
+<!--    {{ form.password2 }}-->
+
+<!--    <input type="submit">-->
+<!--    <a href="{% url 'login' %}"></a>-->
+<!--</form>-->
+
+
+
+
     <style>
         body{
 	margin: 0;
@@ -98,12 +121,13 @@ button:hover{
 }
 
 
-    </style>
+ </style>
 </head>
 <body>
   <form method="POST" >
    {%csrf_token%}
       {{from.as_p}}
+
 
 	<div class="main">
 		<input type="checkbox" id="chk" aria-hidden="true">
@@ -113,8 +137,8 @@ button:hover{
 					<label for="chk" aria-hidden="true">Sign up</label>
 					<input type="text" name="username" placeholder="Username"  required="">
 					<input type="email" name="email" placeholder="Email" required="">
-					<input type="password" name="pas" placeholder="Password" required="">
-                    <input type="password" name="pas_confirm" placeholder="Confirm Password" required>
+					<input type="password" name="password1" placeholder="Password" required="">
+                    <input type="password" name="password2" placeholder="Confirm Password" required>
 					<button>Sign up</button>
 				</form>
 				</div>
