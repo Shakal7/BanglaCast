@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User,auth
+from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import UserManager
@@ -11,38 +11,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 
-
 # Create your views here.
-
 
 def First_page(request):
     return render(request, template_name='PodCast/First_page.html')
-
-
-def base(request):
-    return render(request, 'PodCast/base.html')
-
-
-def home(request):
-    epi = Episode.objects.all()
-    context = {
-        'epi': epi,
-    }
-
-    return render(request, template_name='PodCast/home.html', context=context)
-
-
-def upload_episode(request):
-    form = EpisodeForm()
-    if request.method == 'POST':
-        form = EpisodeForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    context = {
-        'form': form
-    }
-    return render(request, template_name='PodCast/upload_episode.html', context=context)
 
 
 def signUpListener(request):
@@ -88,23 +60,61 @@ def loginUser(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('/')
+                return redirect('home')
             else:
                 print("Not valid !")
 
+        return render(request, 'podcast/login.html')
 
-        return render(request,'podcast/login.html')
 
 def logOut(request):
     auth.logout(request)
     return redirect('/')
 
-def userPage(request):
-    return render(request, template_name='PodCast/userPage.html')
+
+def home(request):
+    epi = Episode.objects.all()
+    context = {
+        'epi': epi,
+    }
+
+    return render(request, template_name='PodCast/home.html', context=context)
 
 
-def ArtistPage(request):
-    return render(request, template_name='PodCast/ArtistPage.html')
+def upload_episode(request):
+    user = request.user
+
+    # Assuming Profile model has a OneToOneField with User model
+    try:
+        profile = user.profile  # Retrieve the profile associated with the user
+    except Profile.DoesNotExist:
+        # Handle the case where the profile doesn't exist (optional)
+        profile = None
+
+    if profile and profile.is_creator:
+        form = EpisodeForm()
+
+        if request.method == 'POST':
+            form = EpisodeForm(request.POST, request.FILES)
+            if form.is_valid():
+                # Assuming the episode model is being created and associated with the user
+                episode = form.save(commit=False)
+                episode.creator = request.user  # Assign the current user as the creator
+                episode.save()
+                return redirect('home')  # Redirect to home page after successful form submission
+
+    else:
+        # Handle the case where the user does not have a creator profile
+        form = None  # or provide appropriate feedback to the user
+
+    context = {
+        'form': form
+    }
+    return render(request, 'PodCast/upload_episode.html', context)
+
+
+def base(request):
+    return render(request, 'PodCast/base.html')
 
 
 def episode_page(request):
@@ -113,6 +123,14 @@ def episode_page(request):
         'episode': episode,
     }
     return render(request, template_name='PodCast/Episode.html', context=context)
+
+
+def userPage(request):
+    return render(request, template_name='PodCast/userPage.html')
+
+
+def ArtistPage(request):
+    return render(request, template_name='PodCast/ArtistPage.html')
 
 
 def player(request, id):
@@ -131,7 +149,6 @@ def delete_epi(request, id):
     context = {'epi': epi}
 
     return render(request, template_name='PodCast/delete_epi.html', context=context)
-
 
 
 def Creator_Page(request):

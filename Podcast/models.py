@@ -4,6 +4,18 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+
+class Episode(models.Model):
+    Title = models.CharField(max_length=200)
+    Artist = models.CharField(max_length=200, blank=True, null=True)
+    Type = models.CharField(max_length=200, blank=True, null=True)
+    image = models.ImageField(upload_to='images', blank=True, null=True, default='images/default.jpg')
+    audio_files = models.FileField(upload_to='images', blank=True, null=True)
+
+    def __str__(self):
+        return self.Title
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null=True)
@@ -11,17 +23,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-class Episode(models.Model):
-    Title = models.CharField(max_length=200)
-    Artist = models.CharField(max_length=200, blank=True, null=True)
-    Type = models.CharField(max_length=200, blank=True, null=True)
-    image = models.ImageField(upload_to='images', blank=True, null=True, default='images/default.jpg')
-    audio_files = models.FileField(upload_to='images',  blank=True, null=True)
-
-
-    def __str__(self):
-        return self.Title
 
 
 class Creator(models.Model):
@@ -38,6 +39,7 @@ class Creator(models.Model):
 
 class Playlist(models.Model):
     l_title = models.CharField(max_length=200)
+    lists = models.ManyToManyField(Episode)
     # Type_choice = (
     #     ('Story', 'Story'),
     #     ('Business', 'Business'),
@@ -92,3 +94,7 @@ class Audio(models.Model):
         return self.title
 
 
+class Channel(models.Model):
+    channel_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=200)
+    audio = models.CharField(max_length=200)
