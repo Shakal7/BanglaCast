@@ -4,12 +4,33 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, null=True)
+    is_creator = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
+
 class Episode(models.Model):
     Title = models.CharField(max_length=200)
     Artist = models.CharField(max_length=200, blank=True, null=True)
     Type = models.CharField(max_length=200, blank=True, null=True)
     image = models.ImageField(upload_to='images', blank=True, null=True, default='image/default.jpg')
-    audio_files = models.FileField(upload_to='images', blank=True, null=True)
+    audio_files = models.FileField(upload_to='images',  blank=True, null=True)
+
+
+    def __str__(self):
+        return self.Title
+
+
+class Creator(models.Model):
+    Title = models.CharField(max_length=200)
+    # Duration = models.PositiveIntegerField()
+    Like = models.IntegerField(blank=True, null=True)
+    Share = models.IntegerField(blank=True, null=True)
+    Download = models.IntegerField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
 
     def __str__(self):
         return self.Title
@@ -71,10 +92,3 @@ class Audio(models.Model):
         return self.title
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, null=True)
-    is_creator = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.user.username

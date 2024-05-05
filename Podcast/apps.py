@@ -5,6 +5,6 @@ class PodcastConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'Podcast'
 
-    def ready(self):
-        import Podcast.Signal
+
+
 

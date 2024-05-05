@@ -32,18 +32,24 @@
           signup
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'signup' 'creator' %}">Creator</a>
-          <a class="dropdown-item" href="{% url 'signup' 'listener' %}">Listener</a>
+          <a class="dropdown-item" href="{% url 'signUpCreator'  %}">Creator</a>
+          <a class="dropdown-item" href="{% url 'signUpListener'  %}">Listener</a>
           <div class="dropdown-divider"></div>
         </div>
       </li>
 <!--      <li class="nav-item active">-->
 <!--        <a class="nav-link" href="signup">Sign up <span class="sr-only">(current)</span></a>-->
 <!--      </li>-->
-      <li class="nav-item">
-        <a class="nav-link" href="login">Login</a>
-      </li>
+      {% if user.is_authenticated %}
 
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logOut' %}">Log Out</a>
+        </li>
+      {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+      {% endif %}
     </ul>
 
   <form class="form-inline my-2 my-lg-0">
@@ -54,12 +60,6 @@
 </nav>
 
 
-<!--<div class="body" style="background: black"></div>-->
-
-<!--      <button type="button"><a href="{% url 'signup' 'creator' %}">Creator</a></button>-->
-
-
-<!--      <button type="button"><a href="{% url 'signup' 'listener' %}">Listener</a></button>-->
   </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>

@@ -20,28 +20,25 @@
   <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
       <li class="nav-item active">
-        <a class="nav-link" href="home">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="about us">About Us <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="#">About Us <span class="sr-only">(current)</span></a>
       </li>
+      <li class="nav-item active">
+          <a class="dropdown-item" href="{% url 'signUpCreator'  %}">Creator</a>
+          <a class="dropdown-item" href="{% url 'signUpListener'  %}">Listener</a>
+      </li>
+      {% if user.is_authenticated %}
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          signup
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{% url 'signup' 'creator' %}">Creator</a>
-          <a class="dropdown-item" href="{% url 'signup' 'listener' %}">Listener</a>
-          <div class="dropdown-divider"></div>
-        </div>
-      </li>
-<!--      <li class="nav-item active">-->
-<!--        <a class="nav-link" href="signup">Sign up <span class="sr-only">(current)</span></a>-->
-<!--      </li>-->
-      <li class="nav-item">
-        <a class="nav-link" href="login">Login</a>
-      </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logOut' %}">Log Out</a>
+        </li>
+      {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+      {% endif %}
 
     </ul>
     <form class="form-inline my-2 my-lg-0">
@@ -62,9 +59,7 @@
     <h5 class="card-title">{{i.Artist}}</h5>
     <h5 class="card-title">{{i.Type}}</h5>
    <a  href="{% url 'player' i.id%}" class="btn btn-primary">Listen</a>
-     {% if request.user.profile.is_creator %}
     <a  href="{% url 'delete_epi' i.id%}" class="btn btn-danger">Delete</a>
-    {% endif %}
   </div>
 </div>
   </div>
@@ -72,19 +67,16 @@
   {% endfor %}
 </div>
 
-
-
-
-
-
-
-{% if request.user.profile.is_creator %}
-<div class="d-grid gap-2 col-2 max-auto" style="padding-left:37%; padding-top:3%">
-  <a href="{% url 'upload_episode' %}" class="btn btn-primary">Add Episode</a>
+<div class = "" style="text-align: center; padding-top: 3%; padding-left: 4%">
+<a href="{% url 'upload_episode' %}" class="btn btn-primary">Add Episode</a>
 </div>
-{% endif %}
 
-<div class="card" style="padding-top: 3%">
+
+
+
+
+
+<div class="card" style="padding-top: 2%">
   <div class="card-header">
     BanglaCast
   </div>
