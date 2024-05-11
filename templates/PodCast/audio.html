@@ -19,15 +19,26 @@
 <!--  </div>-->
 
 <!--</div>-->
+<style>
+      body{
+	margin: 0;
+	padding: 0;
+	display: fixed;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	font-family: 'Jost', sans-serif;
+	background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+}
+    </style>
 
 
-
-<div class="container">
- <div class="row">
+<div class="row">
+ <div class="card" >
     <div class="col-md-6" style="padding-top:7%; padding-left:37%">
       <img src="/media/{{player.image}}" alt="" height="200px" width="300px">
     </div>
-    <div class="col-md-6" style ="padding-top:1%;padding-left:37% ;font size= 3rm">
+    <div class="col-md-6" style ="padding-top:1%;padding-left:37% ;font size= 2rm; color:white;align-item:center">
       <h2> {{player.Title}}</h2>
       <h2> {{player.Artist}}</h2>
       <h2>{{player.Type}}</h2>
