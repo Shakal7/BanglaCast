@@ -57,9 +57,10 @@
 
 
 <div class = "" style="text-align: center; padding-top: 7%; padding-left: 5%">
-    <p style="color:white">Are U sure?</p>
+
 <form method="POST">
     {% csrf_token %}
+    <p style="color:white">Are U sure?</p>
      <a href="{% url 'home' %}" class="btn btn-warning">no</a>
      <input type="submit" name="Submit" style="background: green">
 
