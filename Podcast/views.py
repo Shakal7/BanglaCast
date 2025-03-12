@@ -9,76 +9,71 @@ from .models import *
 from .forms import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from datetime import timedelta, datetime
+from django.contrib import messages
+import random
 
 
 # Create your views here.
 
-def First_page(request):
-    return render(request, template_name='PodCast/First_page.html')
+# def home(request):
+#     epi = Episode.objects.all()
+#     context = {
+#         'epi': epi,
+#     }
+#
+#     return render(request, template_name='PodCast/home.html', context=context)
 
 
-def signUpListener(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        username = request.POST['username']
-        password = request.POST['password']
-        confirmPassword = request.POST['confirmPassword']
-        if password == confirmPassword and len(password) >= 3:
-            user = User.objects.create_user(email=email, username=username, password=password)
-            user.save()
-            return redirect('/')
 
-    # return redirect('login')
-    return render(request, 'PodCast/signup.html')
-
-
-def signUpCreator(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        username = request.POST['username']
-        password = request.POST['password']
-        confirmPassword = request.POST['confirmPassword']
-        if password == confirmPassword and len(password) >= 3:
-            user = User.objects.create_user(email=email, username=username, password=password)
-            user.save()
-            profile = Profile.objects.create(user=user, is_creator=True)
-            profile.save()
-            return redirect('/')
-
-    # return redirect('login')
-    return render(request, 'PodCast/signup.html')
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User, auth
+from .models import *
+from django.utils import timezone
+from datetime import timedelta
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth import authenticate
+from .forms import *
 
 
-def loginUser(request):
-    if request.user.is_authenticated:
-        return redirect('/')
-    else:
-        if request.method == 'POST':
-            username = request.POST.get('username')
-            password = request.POST.get('password')
+# Create your views here.
 
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-            else:
-                print("Not valid !")
-
-        return render(request, 'podcast/login.html')
-
-
-def logOut(request):
-    auth.logout(request)
-    return redirect('/')
+def Explore(request):
+    return render(request, 'Explore.html')
 
 
 def home(request):
-    epi = Episode.objects.all()
-    context = {
-        'epi': epi,
-    }
+    # If the user is not authenticated, redirect them to the login page
+    if not request.user.is_authenticated:
+        return redirect('msg')
 
-    return render(request, template_name='PodCast/home.html', context=context)
+    # Ensure the user has a profile
+    if not hasattr(request.user, 'profile'):
+        Profile.objects.create(user=request.user)
+
+    # Check if the user clicked "More" (pass a query parameter like ?view=all)
+    view_all = request.GET.get('view') == 'all'
+
+    # Fetch free episodes (default behavior)
+    episodes = Episode.objects.filter(is_premium=False)
+
+    # Show all episodes only if "More" is clicked and user is premium or creator
+    if view_all and (request.user.profile.is_premium or request.user.profile.is_creator):
+        episodes = Episode.objects.all()
+
+    context = {
+        'episodes': episodes,
+        'view_all': view_all,  # Add this flag to handle UI changes
+    }
+    return render(request, 'PodCast/home.html', context)
+
+
+
+def First_page(request):
+    return render(request, template_name='PodCast/First_page.html')
 
 
 def upload_episode(request):
@@ -166,3 +161,119 @@ def index(request):
     page_obj = paginator.get_page(page_number)
     context = {"page_obj": page_obj}
     return render(request, 'PodCast/index.html', context)
+
+
+def signUpListener(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        username = request.POST['username']
+        password = request.POST['password']
+        confirmPassword = request.POST['confirmPassword']
+        if password == confirmPassword and len(password) >= 3:
+            user = User.objects.create_user(email=email, username=username, password=password)
+            user.save()
+            return redirect('/')
+
+    # return redirect('login')
+    return render(request, 'PodCast/signup.html')
+
+
+def signUpCreator(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        username = request.POST['username']
+        password = request.POST['password']
+        confirmPassword = request.POST['confirmPassword']
+        if password == confirmPassword and len(password) >= 3:
+            user = User.objects.create_user(email=email, username=username, password=password)
+            user.save()
+            profile = Profile.objects.create(user=user, is_creator=True)
+            profile.save()
+            return redirect('/')
+
+    # return redirect('login')
+    return render(request, 'PodCast/signup.html')
+
+
+def loginUser(request):
+    if request.user.is_authenticated:
+        return redirect('/')
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                print("Not valid !")
+
+        return render(request, 'podcast/login.html')
+
+
+def logOut(request):
+    auth.logout(request)
+    return redirect('/')
+
+
+@login_required
+def mock_payment(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if profile.is_creator:
+        messages.error(request, "🚫 Creators do not need a premium subscription!")
+        return redirect("PodCast/premium")  # Redirect creators to premium page
+
+    if request.method == "POST":
+        status = random.choice(["success", "failed"])  # Simulated payment response
+
+        if status == "success":
+            profile.renew_premium(days=30)  # Upgrade listener
+            messages.success(request, f"✅ Payment successful! Premium active until {profile.expiry_date.strftime('%Y-%m-%d')}.")
+            return redirect("PodCast/premium")
+
+        else:
+            messages.error(request, "❌ Payment failed! Please try again.")
+            return redirect("mock_payment")
+
+    return render(request, "mock_payment.html")
+
+@login_required
+def premium(request):
+    profile = Profile.objects.filter(user=request.user).first()
+
+    if profile.is_creator:
+        return render(request, "premium_creator.html")  # Different page for creators
+
+    if not profile or not profile.is_premium_active():
+        messages.error(request, "⚠️ Your premium subscription has expired! Please renew.")
+        return redirect("PodCast/mock_payment")
+
+    return render(request, "PodCast/premium.html", {"profile": profile})
+def more_option(request):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    # Ensure the user has a profile
+    if not hasattr(request.user, 'profile'):
+        Profile.objects.create(user=request.user)
+
+    # Fetch episodes based on user type
+    if request.user.profile.is_premium or request.user.profile.is_creator:
+        # Fetch all episodes for premium users or creators
+        episodes = Episode.objects.all()
+    else:
+        # Restrict to free episodes for regular users
+        episodes = Episode.objects.filter(is_premium=False)
+
+    context = {
+        'episodes': episodes,
+        'is_more_page': True,  # Add this to indicate the request is for the more page
+    }
+    return render(request, 'PodCast/home.html', context)
+
+
+

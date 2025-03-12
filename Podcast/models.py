@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import timedelta, datetime
 
 
 # Create your models here.
@@ -11,6 +12,7 @@ class Episode(models.Model):
     Type = models.CharField(max_length=200, blank=True, null=True)
     image = models.ImageField(upload_to='images', blank=True, null=True, default='images/default.jpg')
     audio_files = models.FileField(upload_to='images', blank=True, null=True)
+    is_premium = models.BooleanField(default=False)
 
     def __str__(self):
         return self.Title
@@ -18,12 +20,20 @@ class Episode(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, null=True)
-    is_creator = models.BooleanField(default=False)
+    is_premium = models.BooleanField(default=False)
+    expiry_date = models.DateTimeField(null=True, blank=True)
+    is_creator = models.BooleanField(default=False)  # NEW: True if user is a creator
 
-    def __str__(self):
-        return self.user.username
+    def is_premium_active(self):
+        """Check if the listener's premium subscription is still valid."""
+        return self.is_premium and self.expiry_date and self.expiry_date > datetime.now()
 
+    def renew_premium(self, days=30):
+        """Extend premium for listeners only."""
+        if not self.is_creator:  # Creators don’t need premium
+            self.is_premium = True
+            self.expiry_date = datetime.now() + timedelta(days=days)
+            self.save()
 
 class Creator(models.Model):
     Title = models.CharField(max_length=200)

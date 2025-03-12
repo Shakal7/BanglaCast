@@ -1,0 +1,10 @@
+{% block content %}
+    <h2>Premium Content</h2>
+
+    {% if request.user.profile.is_premium %}
+        <p>🎧 Welcome to the exclusive premium podcasts!</p>
+    {% else %}
+        <p>⚠️ You need a premium subscription to access this content.</p>
+        <a href="{% url 'mock_payment' %}">Subscribe Now</a>
+    {% endif %}
+{% endblock %}

@@ -37,6 +37,9 @@ urlpatterns = [
     path('Episode/', p_views.episode_page, name='Episode'),
     # path('MusicPlayer/', p_views.MusicPlayer, name='MusicPlayer'),
     path('Creator/', p_views.Creator_Page, name='Creator'),
+    path("mock-payment/", p_views.mock_payment, name="mock_payment"),
+    path("premium/", p_views.premium, name="premium"),
+    path('more/', p_views.more_option, name='more_option'),
 
 ]
 
