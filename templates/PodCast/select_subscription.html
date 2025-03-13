@@ -1,0 +1,28 @@
+{% block content %}
+  <div class="container">
+    <h2>Select Your Subscription Plan</h2>
+
+    <!-- Display any messages -->
+    {% if messages %}
+      <div class="alert alert-info">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'process_payment' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="subscription">Choose a subscription plan:</label>
+        <select id="subscription" name="subscription" class="form-control">
+          <option value="monthly">Monthly - $10</option>
+          <option value="yearly">Yearly - $100</option>
+        </select>
+      </div>
+
+      <!-- Add the Make Payment button here -->
+      <button type="submit" class="btn btn-primary">Make Payment</button>
+    </form>
+  </div>
+{% endblock %}

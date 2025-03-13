@@ -1,0 +1,13 @@
+{% block content %}
+    <h2>Payment Confirmation</h2>
+
+    {% if payment_status == 'success' %}
+        <p>✅ Payment was successful!</p>
+        <p>Your premium subscription is active until {{ expiry_date }}.</p>
+    {% else %}
+        <p>❌ Payment failed! Please try again.</p>
+    {% endif %}
+
+    <a href="{% url 'premium' %}" class="btn btn-primary">Go to Premium Page</a>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Go to Home</a>
+{% endblock %}

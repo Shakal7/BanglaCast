@@ -189,7 +189,7 @@
 </div>
 
 <!-- Conditionally Show "Back to Home" Button -->
-{% if is_more_page %}
+{% if is_more_option %}
 <div class="text-center mt-4">
     <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
 </div>
@@ -198,20 +198,21 @@
 
 <!-- More Episodes Button for Premium Users -->
 {% if request.user.profile.is_premium %}
-        <p> You have a premium subscription until {{ request.user.profile.expiry_date|date:"Y-m-d" }}!</p>
-    {% else %}
-        <p> Upgrade to premium for full access!</p>
-        <a href="{% url 'mock_payment' %}" class="btn btn-primary">Upgrade Now</a>
-    {% endif %}
+    <p> You have a premium subscription until {{ request.user.profile.expiry_date|date:"Y-m-d" }}!</p>
+{% else %}
+    <p> Upgrade to premium for full access!</p>
+    <!-- "Upgrade Now" button is always visible for non-premium users -->
+    <a href="{% url 'mock_payment' %}" class="btn btn-primary">Upgrade Now</a>
+{% endif %}
 
 <!-- More Episodes and Add Episode Buttons for Creators -->
 {% if request.user.profile.is_creator %}
 <div class="d-flex justify-content-center" style="gap: 30px; padding-top: 3%;">
     <a href="{% url 'more_option' %}" class="btn btn-primary">More Episodes</a>
-
     <a href="{% url 'upload_episode' %}" class="btn btn-primary">Add Episode</a>
 </div>
 {% endif %}
+
 
 
 

@@ -40,6 +40,8 @@ urlpatterns = [
     path("mock-payment/", p_views.mock_payment, name="mock_payment"),
     path("premium/", p_views.premium, name="premium"),
     path('more/', p_views.more_option, name='more_option'),
+    path('make-payment/', p_views.make_payment, name='make_payment'),
+    path('process-payment/', p_views.process_payment, name='process_payment'),
 
 ]
 

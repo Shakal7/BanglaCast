@@ -218,27 +218,21 @@ def logOut(request):
     return redirect('/')
 
 
+
+
 @login_required
 def mock_payment(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)
+    profile = Profile.objects.filter(user=request.user).first()  # Only get, don't auto-create!
+
+    if not profile:
+        messages.error(request, "⚠️ You need a profile to make a payment.")
+        return redirect("home")  # Redirect them somewhere safe
 
     if profile.is_creator:
         messages.error(request, "🚫 Creators do not need a premium subscription!")
         return redirect("PodCast/premium")  # Redirect creators to premium page
 
-    if request.method == "POST":
-        status = random.choice(["success", "failed"])  # Simulated payment response
-
-        if status == "success":
-            profile.renew_premium(days=30)  # Upgrade listener
-            messages.success(request, f"✅ Payment successful! Premium active until {profile.expiry_date.strftime('%Y-%m-%d')}.")
-            return redirect("PodCast/premium")
-
-        else:
-            messages.error(request, "❌ Payment failed! Please try again.")
-            return redirect("mock_payment")
-
-    return render(request, "mock_payment.html")
+    return render(request, "PodCast/mock_payment.html")
 
 @login_required
 def premium(request):
@@ -277,3 +271,45 @@ def more_option(request):
 
 
 
+def process_payment(request):
+    profile = Profile.objects.filter(user=request.user).first()
+
+    if not profile:
+        messages.error(request, "⚠️ You need a profile to make a payment.")
+        return redirect("home")
+
+    if profile.is_creator:
+        messages.error(request, "🚫 Creators do not need a premium subscription!")
+        return redirect("PodCast/premium")
+
+    # Get the selected subscription option from the form
+    subscription = request.POST.get("subscription")
+
+    # Simulate payment success or failure
+    status = random.choice(["success", "failed"])  # Simulate payment response
+    if status == "success":
+        if subscription == "monthly":
+            profile.is_premium = True
+            profile.expiry_date = datetime.now() + timedelta(days=30)  # Monthly subscription
+        elif subscription == "yearly":
+            profile.is_premium = True
+            profile.expiry_date = datetime.now() + timedelta(days=365)  # Yearly subscription
+
+        profile.save()
+
+        # Redirect to the payment confirmation page with the result
+        return redirect("make_payment", payment_status="success", expiry_date=profile.expiry_date.strftime('%Y-%m-%d'))
+
+    else:
+        # Redirect to the payment confirmation page with failure status
+        return redirect("make_payment", payment_status="failed")
+
+def make_payment(request):
+    # Check if there is any status passed from the process_payment view
+    payment_status = request.GET.get('payment_status', 'failed')
+    expiry_date = request.GET.get('expiry_date', None)
+
+    return render(request, "PodCast/make_confirmation.html", {
+        'payment_status': payment_status,
+        'expiry_date': expiry_date
+    })
