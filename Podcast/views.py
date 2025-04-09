@@ -192,17 +192,17 @@ def logOut(request):
 @login_required
 @login_required
 def mock_payment(request):
-    profile = Profile.objects.filter(user=request.user).first()  # ইউজারের প্রোফাইল খুঁজে পেতে
+    profile = Profile.objects.filter(user=request.user).first()
 
     if not profile:
-        messages.error(request, "⚠️ আপনাকে পেমেন্ট করার জন্য প্রোফাইল তৈরি করতে হবে।")
-        return redirect("home")  # যদি প্রোফাইল না থাকে, হোম পেজে রিডাইরেক্ট হবে
+        messages.error(request, "")
+        return redirect("home")
 
     if profile.is_creator:
-        messages.error(request, "🚫 ক্রিয়েটরদের প্রিমিয়াম সাবস্ক্রিপশনের প্রয়োজন নেই!")
-        return redirect("PodCast/premium")  # ক্রিয়েটরদের আলাদা পেজে রিডাইরেক্ট হবে
+        messages.error(request, "")
+        return redirect("PodCast/premium")
 
-    return render(request, "PodCast/mock_payment.html")  # পেমেন্ট পেজ রেন্ডার হবে
+    return render(request, "PodCast/mock_payment.html")
 
 
 @login_required
