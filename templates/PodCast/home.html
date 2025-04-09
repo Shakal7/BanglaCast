@@ -158,7 +158,10 @@
         {% endif %}
 
       </ul>
-
+     <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'search_episodes' %}">
+    <input class="form-control mr-sm-2" type="search" name="s" placeholder="Search for episodes..." aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
 
     </div>
   </nav>
@@ -196,22 +199,43 @@
 {% endif %}
 
 
-<!-- More Episodes Button for Premium Users -->
+<!-- Show Premium Status -->
 {% if request.user.profile.is_premium %}
-    <p> You have a premium subscription until {{ request.user.profile.expiry_date|date:"Y-m-d" }}!</p>
+   <div>
+    <p style="color: white; font-weight: bold">
+        You have a premium subscription until {{ request.user.profile.expiry_date|date:"Y-m-d" }}!
+    </p>
+</div>
+
 {% else %}
-    <p> Upgrade to premium for full access!</p>
-    <!-- "Upgrade Now" button is always visible for non-premium users -->
+    <p>Upgrade to premium for full access!</p>
     <a href="{% url 'mock_payment' %}" class="btn btn-primary">Upgrade Now</a>
 {% endif %}
 
-<!-- More Episodes and Add Episode Buttons for Creators -->
-{% if request.user.profile.is_creator %}
-<div class="d-flex justify-content-center" style="gap: 30px; padding-top: 3%;">
-    <a href="{% url 'more_option' %}" class="btn btn-primary">More Episodes</a>
-    <a href="{% url 'upload_episode' %}" class="btn btn-primary">Add Episode</a>
+{% if is_more_page %}
+<div class="text-center mt-4">
+    <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
 </div>
 {% endif %}
+
+<!-- More Episodes Button (for Premium and Creator users) -->
+{% if is_more_page %}
+    <!-- Don't show More Episodes button on the more option page -->
+    {% else %}
+    {% if request.user.profile.is_premium or request.user.profile.is_creator %}
+    <div class="d-flex justify-content-center" style="gap: 30px; padding-top: 3%;">
+        <a href="{% url 'more_option' %}" class="btn btn-primary">More Episodes</a>
+    </div>
+    {% endif %}
+    {% endif %}
+
+<!-- Add Episode Button (only for Creators) -->
+{% if request.user.profile.is_creator %}
+    <div class="d-flex justify-content-center" style="gap: 30px; padding-top: 3%;">
+        <a href="{% url 'upload_episode' %}" class="btn btn-primary">Add Episode</a>
+    </div>
+{% endif %}
+
 
 
 

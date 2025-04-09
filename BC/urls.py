@@ -42,6 +42,9 @@ urlpatterns = [
     path('more/', p_views.more_option, name='more_option'),
     path('make-payment/', p_views.make_payment, name='make_payment'),
     path('process-payment/', p_views.process_payment, name='process_payment'),
+    path('more_option/', p_views.more_option, name='more_option'),
+    path('search/', p_views.search_episodes, name='search_episodes'),
+
 
 ]
 

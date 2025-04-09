@@ -1,41 +1,12 @@
-from django.core.paginator import Paginator
-from django.http import HttpResponse, HttpRequest
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, auth
-from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import UserManager
-from .models import *
-from .forms import *
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from datetime import timedelta, datetime
-from django.contrib import messages
 import random
-
-
-# Create your views here.
-
-# def home(request):
-#     epi = Episode.objects.all()
-#     context = {
-#         'epi': epi,
-#     }
-#
-#     return render(request, template_name='PodCast/home.html', context=context)
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, auth
-from .models import *
-from django.utils import timezone
-from datetime import timedelta
 from django.contrib import messages
-from django.contrib.auth import login
 from django.contrib.auth import authenticate
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import auth
+from django.core.paginator import Paginator
+from django.shortcuts import redirect
+from django.shortcuts import render
 from .forms import *
 
 
@@ -67,9 +38,9 @@ def home(request):
     context = {
         'episodes': episodes,
         'view_all': view_all,  # Add this flag to handle UI changes
+        'is_more_page': False,
     }
     return render(request, 'PodCast/home.html', context)
-
 
 
 def First_page(request):
@@ -218,21 +189,21 @@ def logOut(request):
     return redirect('/')
 
 
-
-
+@login_required
 @login_required
 def mock_payment(request):
-    profile = Profile.objects.filter(user=request.user).first()  # Only get, don't auto-create!
+    profile = Profile.objects.filter(user=request.user).first()  # ইউজারের প্রোফাইল খুঁজে পেতে
 
     if not profile:
-        messages.error(request, "⚠️ You need a profile to make a payment.")
-        return redirect("home")  # Redirect them somewhere safe
+        messages.error(request, "⚠️ আপনাকে পেমেন্ট করার জন্য প্রোফাইল তৈরি করতে হবে।")
+        return redirect("home")  # যদি প্রোফাইল না থাকে, হোম পেজে রিডাইরেক্ট হবে
 
     if profile.is_creator:
-        messages.error(request, "🚫 Creators do not need a premium subscription!")
-        return redirect("PodCast/premium")  # Redirect creators to premium page
+        messages.error(request, "🚫 ক্রিয়েটরদের প্রিমিয়াম সাবস্ক্রিপশনের প্রয়োজন নেই!")
+        return redirect("PodCast/premium")  # ক্রিয়েটরদের আলাদা পেজে রিডাইরেক্ট হবে
 
-    return render(request, "PodCast/mock_payment.html")
+    return render(request, "PodCast/mock_payment.html")  # পেমেন্ট পেজ রেন্ডার হবে
+
 
 @login_required
 def premium(request):
@@ -246,6 +217,8 @@ def premium(request):
         return redirect("PodCast/mock_payment")
 
     return render(request, "PodCast/premium.html", {"profile": profile})
+
+
 def more_option(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -270,42 +243,35 @@ def more_option(request):
     return render(request, 'PodCast/home.html', context)
 
 
-
+@login_required
 def process_payment(request):
-    profile = Profile.objects.filter(user=request.user).first()
+    if request.method == "POST":
+        subscription = request.POST.get("subscription")
+        status = "success"  # mock payment, so it's always success
 
-    if not profile:
-        messages.error(request, "⚠️ You need a profile to make a payment.")
-        return redirect("home")
+        profile = request.user.profile
 
-    if profile.is_creator:
-        messages.error(request, "🚫 Creators do not need a premium subscription!")
-        return redirect("PodCast/premium")
+        if status == "success":
+            if subscription == "weekly":
+                profile.is_premium = True
+                profile.expiry_date = datetime.now() + timedelta(weeks=1)
+            elif subscription == "monthly":
+                profile.is_premium = True
+                profile.expiry_date = datetime.now() + timedelta(days=30)
+            elif subscription == "yearly":
+                profile.is_premium = True
+                profile.expiry_date = datetime.now() + timedelta(days=365)
 
-    # Get the selected subscription option from the form
-    subscription = request.POST.get("subscription")
+            profile.save()
 
-    # Simulate payment success or failure
-    status = random.choice(["success", "failed"])  # Simulate payment response
-    if status == "success":
-        if subscription == "monthly":
-            profile.is_premium = True
-            profile.expiry_date = datetime.now() + timedelta(days=30)  # Monthly subscription
-        elif subscription == "yearly":
-            profile.is_premium = True
-            profile.expiry_date = datetime.now() + timedelta(days=365)  # Yearly subscription
+            # ✅ Correct way to pass parameters via query string
+            return redirect(
+                f'/make-payment/?payment_status=success&expiry_date={profile.expiry_date.strftime("%Y-%m-%d")}')
+        else:
+            return redirect('/make-payment/?payment_status=failed')
 
-        profile.save()
-
-        # Redirect to the payment confirmation page with the result
-        return redirect("make_payment", payment_status="success", expiry_date=profile.expiry_date.strftime('%Y-%m-%d'))
-
-    else:
-        # Redirect to the payment confirmation page with failure status
-        return redirect("make_payment", payment_status="failed")
 
 def make_payment(request):
-    # Check if there is any status passed from the process_payment view
     payment_status = request.GET.get('payment_status', 'failed')
     expiry_date = request.GET.get('expiry_date', None)
 
@@ -313,3 +279,10 @@ def make_payment(request):
         'payment_status': payment_status,
         'expiry_date': expiry_date
     })
+
+
+def search_episodes(request):
+    query = request.GET.get('s', '')  # Get the query from the search form
+    # Use Title instead of title
+    episodes = Episode.objects.filter(Title__icontains=query) if query else Episode.objects.all()
+    return render(request, 'PodCast/home.html', {'episodes': episodes, 'query': query})

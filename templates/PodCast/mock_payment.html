@@ -1,10 +1,23 @@
-{% block content %}
-    <h2>Mock Payment Page</h2>
-    <!-- Other content -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mock Payment</title>
+</head>
+<body>
+    <h2>Do you want to subscribe to a premium plan?</h2>
 
-    <!-- Make Payment Button -->
-    <form method="POST" action="{% url 'make_payment' %}">
+    <form action="{% url 'process_payment' %}" method="POST">
         {% csrf_token %}
-        <button type="submit" class="btn btn-primary">Make Payment</button>
+        <label for="subscription">Choose a subscription:</label>
+        <select name="subscription" id="subscription">
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+
+        </select>
+        <button type="submit">Make Payment</button>
     </form>
-{% endblock %}
+</body>
+</html>
+
