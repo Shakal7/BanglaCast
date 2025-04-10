@@ -2,6 +2,7 @@ import random
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
+from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import auth
 from django.core.paginator import Paginator
@@ -177,9 +178,18 @@ def loginUser(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')
+
+                try:
+                    profile = Profile.objects.get(user=user)
+                    if profile.is_creator:
+                        return redirect('Creator')  # creator.html er URL name
+                    else:
+                        return redirect('home')
+                except Profile.DoesNotExist:
+                    print("Profile does not exist!")
+
             else:
-                print("Not valid !")
+                print("Invalid credentials!")
 
         return render(request, 'podcast/login.html')
 
