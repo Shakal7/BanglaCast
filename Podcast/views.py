@@ -6,15 +6,21 @@ from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import auth
 from django.core.paginator import Paginator
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.shortcuts import render
 from .forms import *
 
 
 # Create your views here.
 
+
+def First_page(request):
+    return render(request, template_name='PodCast/First_page.html')
+
+
 def Explore(request):
-    return render(request, 'Explore.html')
+    playlists = Playlist.objects.all()
+    return render(request, 'PodCast/Explore.html', {'playlists': playlists})
 
 
 def home(request):
@@ -26,26 +32,49 @@ def home(request):
     if not hasattr(request.user, 'profile'):
         Profile.objects.create(user=request.user)
 
+    # Get all playlists
+    playlists = Playlist.objects.all()
+
     # Check if the user clicked "More" (pass a query parameter like ?view=all)
     view_all = request.GET.get('view') == 'all'
 
-    # Fetch free episodes (default behavior)
+    # Default: show only free episodes
     episodes = Episode.objects.filter(is_premium=False)
 
-    # Show all episodes only if "More" is clicked and user is premium or creator
+    # Show all episodes if "More" is clicked AND user is premium or creator
     if view_all and (request.user.profile.is_premium or request.user.profile.is_creator):
         episodes = Episode.objects.all()
 
+    # ✅ Limit to 2 free episodes if user is NOT premium or creator
+    if not (request.user.profile.is_premium or request.user.profile.is_creator):
+        episodes = episodes[:2]
+
     context = {
-        'episodes': episodes,
-        'view_all': view_all,  # Add this flag to handle UI changes
+        'playlists': playlists,  # For displaying category-wise podcasts
+        'episodes': episodes,  # For home page episode list
+        'view_all': view_all,
         'is_more_page': False,
     }
+
     return render(request, 'PodCast/home.html', context)
 
 
-def First_page(request):
-    return render(request, template_name='PodCast/First_page.html')
+def playlist_details(request, id):
+    playlist = get_object_or_404(Playlist, id=id)
+    episodes = playlist.episodes.all()  # related_name ব্যবহার করে episode গুলো আনলাম
+    return render(request, 'PodCast/playlist_details.html', {
+        'playlist': playlist,
+        'episodes': episodes
+    })
+
+
+
+
+def episode_detail(request, id):
+    episode = Episode.objects.get(id=id)
+    return render(request, 'PodCast/episode_detail.html', {'episode': episode})
+
+
 
 
 def upload_episode(request):
@@ -80,6 +109,8 @@ def upload_episode(request):
     return render(request, 'PodCast/upload_episode.html', context)
 
 
+
+
 def base(request):
     return render(request, 'PodCast/base.html')
 
@@ -100,12 +131,6 @@ def ArtistPage(request):
     return render(request, template_name='PodCast/ArtistPage.html')
 
 
-def player(request, id):
-    player = Episode.objects.get(pk=id)
-    context = {
-        'player': player,
-    }
-    return render(request, template_name='PodCast/audio.html', context=context)
 
 
 def delete_epi(request, id):
@@ -199,7 +224,7 @@ def logOut(request):
     return redirect('/')
 
 
-@login_required
+
 @login_required
 def mock_payment(request):
     profile = Profile.objects.filter(user=request.user).first()
@@ -296,3 +321,32 @@ def search_episodes(request):
     # Use Title instead of title
     episodes = Episode.objects.filter(Title__icontains=query) if query else Episode.objects.all()
     return render(request, 'PodCast/home.html', {'episodes': episodes, 'query': query})
+
+
+def player(request, id):
+    player = get_object_or_404(Episode, id=id)
+
+    if player.playlist:
+        all_episodes = Episode.objects.filter(playlist=player.playlist).order_by('id')
+        episode_list = list(all_episodes)
+        player_index = episode_list.index(player) + 1  # 1-based index
+    else:
+        player_index = 1
+
+        # Premium check
+    is_premium_user = False
+    if request.user.is_authenticated:
+        profile = getattr(request.user, 'profile', None)
+        if profile:
+            is_premium_user = profile.is_premium
+
+    # Can play logic
+    can_play = (player_index <= 2) or is_premium_user
+
+    context = {
+        'player': player,
+        'can_play': can_play,
+        'is_premium': is_premium_user,
+        'player_index': player_index,
+    }
+    return render(request, 'PodCast/audio.html', context=context)

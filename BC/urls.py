@@ -25,6 +25,8 @@ urlpatterns = [
     path('home/', p_views.home, name='home'),
     # path('', p_views.base, name='base'),
     path('', p_views.First_page, name='First_page'),
+    path('Explore', p_views.Explore, name='Explore'),
+    path('playlist/<int:id>/', p_views.playlist_details, name='playlist_details'),
     path('upload_episode/', p_views.upload_episode, name='upload_episode'),
     path('player/<str:id>', p_views.player, name='player'),
     path('delete_epi/<str:id>', p_views.delete_epi, name='delete_epi'),
@@ -37,13 +39,16 @@ urlpatterns = [
     path('Episode/', p_views.episode_page, name='Episode'),
     # path('MusicPlayer/', p_views.MusicPlayer, name='MusicPlayer'),
     path('Creator/', p_views.Creator_Page, name='Creator'),
-    path("mock-payment/", p_views.mock_payment, name="mock_payment"),
+    path("mock_payment/", p_views.mock_payment, name="mock_payment"),
     path("premium/", p_views.premium, name="premium"),
     path('more/', p_views.more_option, name='more_option'),
     path('make-payment/', p_views.make_payment, name='make_payment'),
     path('process-payment/', p_views.process_payment, name='process_payment'),
     path('more_option/', p_views.more_option, name='more_option'),
     path('search/', p_views.search_episodes, name='search_episodes'),
+    path('episode_detail/<int:pk>/', p_views.episode_detail, name='episode_detail'),
+
+
 
 
 ]

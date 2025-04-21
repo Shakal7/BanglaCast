@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for playlist in playlists %}
+  <div class="card p-3 m-2">
+    <h2>{{ playlist.name }}</h2>
+    <p>{{ playlist.description }}</p>
+
+    <div class="row">
+      {% for episode in playlist.episodes.all %}
+        {% if episode in episodes %}
+          <div class="col-md-4">
+            <div class="card">
+              <h4>{{ episode.title }}</h4>
+              <a href="{% url 'episode_detail' episode.pk %}">Listen</a>
+            </div>
+          </div>
+        {% endif %}
+      {% empty %}
+        <p>No episodes in this playlist yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+
+
+</body>
+</html>

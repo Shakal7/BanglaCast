@@ -5,6 +5,16 @@ from datetime import timedelta, datetime
 
 # Create your models here.
 
+class Playlist(models.Model):
+    name = models.CharField(max_length=100, default='General')
+    description = models.TextField(blank=True, null=True)
+    Artist = models.CharField(max_length=200, blank=True, null=True)
+    Type = models.CharField(max_length=200, blank=True, null=True)
+    image = models.ImageField(upload_to='images', blank=True, null=True, default='images/default.jpg')
+
+    def __str__(self):
+        return self.name
+
 
 class Episode(models.Model):
     Title = models.CharField(max_length=200)
@@ -13,6 +23,7 @@ class Episode(models.Model):
     image = models.ImageField(upload_to='images', blank=True, null=True, default='images/default.jpg')
     audio_files = models.FileField(upload_to='images', blank=True, null=True)
     is_premium = models.BooleanField(default=False)
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, related_name='episodes', null=True, blank=True)
 
     def __str__(self):
         return self.Title
@@ -35,6 +46,7 @@ class Profile(models.Model):
             self.expiry_date = datetime.now() + timedelta(days=days)
             self.save()
 
+
 class Creator(models.Model):
     Title = models.CharField(max_length=200)
     # Duration = models.PositiveIntegerField()
@@ -45,22 +57,6 @@ class Creator(models.Model):
 
     def __str__(self):
         return self.Title
-
-
-class Playlist(models.Model):
-    l_title = models.CharField(max_length=200)
-    lists = models.ManyToManyField(Episode)
-    # Type_choice = (
-    #     ('Story', 'Story'),
-    #     ('Business', 'Business'),
-    #     ('Sports', 'Sports'),
-    #     ('Education', 'Education'),
-    # )
-    Type = models.CharField(max_length=100, blank=True, null=True)
-    image = models.ImageField(blank=True, null=True)
-
-    def __str__(self):
-        return self.l_title
 
 
 # class Audio(models.Model):
@@ -99,6 +95,7 @@ class Audio(models.Model):
     lyrics = models.TextField(blank=True, null=True)
     duration = models.CharField(max_length=20)
     paginate_by = 2
+    index = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.title

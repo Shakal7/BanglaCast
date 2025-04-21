@@ -284,12 +284,22 @@
   </div>
 </div>
 
+{% for playlist in playlists %}
+  <h2>{{ playlist.name }}</h2>
+  <p>{{ playlist.description }}</p>
 
-{% if is_more_page %}
-<div class="text-center mt-4">
-  <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
-</div>
-{% endif %}
+  {% for episode in playlist.episodes.all %}
+    {% if episode in episodes %}
+      <div>
+        <h4>{{ episode.title }}</h4>
+        <a href="{% url 'episode_detail' episode.pk %}">Listen</a>
+      </div>
+    {% endif %}
+  {% empty %}
+    <p>No episodes in this playlist yet.</p>
+  {% endfor %}
+{% endfor %}
+
 
 
 {% if is_more_page %}
