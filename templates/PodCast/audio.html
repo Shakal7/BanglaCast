@@ -1,147 +1,213 @@
 {% load static %}
 
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        font-family: 'Roboto', sans-serif;
-        background: linear-gradient(135deg, #8e9eab 0%, #eef2f3 100%);
-        color: #333;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BanglaCast Player</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    .card {
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        width: 70%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: row;
-        padding: 25px;
-        margin-top: 5%;
-        transition: transform 0.3s ease;
-    }
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            padding-top: 70px; /* ensures content doesn't hide under navbar */
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #8e9eab 0%, #eef2f3 100%);
+            color: #333;
+        }
 
-    .card:hover {
-        transform: translateY(-10px);
-    }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+        }
 
-    .card img {
-        border-radius: 12px;
-        object-fit: cover;
-        width: 100%;
-        height: auto;
-        max-width: 350px;
-    }
+        .navbar-brand {
+            font-family: 'Pacifico', cursive;
+            color: #1DB954 !important;
+        }
 
-    .card .content {
-        padding: 20px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
+        .navbar-nav .nav-link {
+            font-weight: 600;
+            color: #B0B0B0 !important;
+            transition: color 0.3s ease;
+        }
 
-    .card h2 {
-        margin: 10px 0;
-        font-size: 1.8rem;
-        font-weight: 500;
-        color: #222;
-    }
+        .navbar-nav .nav-link:hover {
+            color: #1DB954 !important;
+        }
 
-    .card h2:first-of-type {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1d3557;
-    }
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
 
-    .card p {
-        color: #555;
-        font-size: 1rem;
-        margin-top: 5px;
-    }
+        .card:hover {
+            transform: translateY(-10px);
+        }
 
-    .card a button {
-        background: linear-gradient(to right, #f7b731, #f39c12);
-        color: white;
-        padding: 12px 24px;
-        border: none;
-        font-weight: bold;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 1rem;
-        margin-top: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    }
+        .card img {
+            border-radius: 12px;
+            object-fit: cover;
+            width: 100%;
+            height: auto;
+            max-width: 350px;
+        }
 
-    .card a button:hover {
-        background: linear-gradient(to right, #f39c12, #e67e22);
-        transform: scale(1.05);
-    }
+        .card .content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-    .audio-container {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+        .card h2 {
+            margin: 10px 0;
+            font-size: 1.8rem;
+            font-weight: 500;
+            color: #222;
+        }
 
-    audio {
-        width: 100%;
-        border-radius: 10px;
-        margin-top: 15px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
+        .card h2:first-of-type {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1d3557;
+        }
 
-    .card .card-info {
-        padding: 10px 0;
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.9rem;
-        color: #888;
-    }
-</style>
+        .card p {
+            color: #555;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
 
-<div class="row">
-    <div class="card">
-        <div class="col-md-6">
-            <div style="padding-top: 5%; display: flex; justify-content: center;">
-                <img src="/media/{{ player.image }}" alt="Episode Image">
-            </div>
-        </div>
+        .card a button {
+            background: linear-gradient(to right, #f7b731, #f39c12);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
 
-        <div class="col-md-6 content">
-            <div>
-                <h2>{{ player.Title }}</h2>
-                <h2>{{ player.Artist }}</h2>
-                <h2>{{ player.Type }}</h2>
-                <p>Description: {{ player.description }}</p>
+        .card a button:hover {
+            background: linear-gradient(to right, #f39c12, #e67e22);
+            transform: scale(1.05);
+        }
 
-                <div class="card-info">
-                    <span>Duration: {{ player.duration }} mins</span>
-                    <span>Release Date: {{ player.release_date }}</span>
-                </div>
-            </div>
+        .audio-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-            {% if can_play %}
-                <div class="audio-container">
-                    <audio controls>
-                        <source src="/media/{{ player.audio_files }}" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                </div>
-            {% else %}
-                <a href="{% url 'mock_payment' %}">
-                    <button>
-                         Go Premium to Listen to This Episode
-                    </button>
-                </a>
-            {% endif %}
+        audio {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card .card-info {
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card img {
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'Playlist_view' %}">BanglaCast</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+        <ul class="navbar-nav mr-auto">
+            <!-- Navigation links can be uncommented and customized -->
+            <!-- Example:
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+            -->
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Card -->
+<div class="card mt-5">
+    <div class="col-md-6">
+        <div style="display: flex; justify-content: center;">
+            <img src="/media/{{ player.image }}" alt="Episode Image">
         </div>
     </div>
+
+    <div class="col-md-6 content">
+        <div>
+            <h2>{{ player.Title }}</h2>
+            <h2>{{ player.Artist }}</h2>
+            <h2>{{ player.Type }}</h2>
+            <p>Description: {{ player.description }}</p>
+
+            <div class="card-info">
+                <span>Duration: {{ player.duration }} mins</span>
+                <span>Release Date: {{ player.release_date }}</span>
+            </div>
+        </div>
+
+        {% if not player.is_premium or is_premium_user %}
+        <div class="audio-container">
+            <audio controls>
+                <source src="/media/{{ player.audio_files }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        {% else %}
+        <a href="{% url 'mock_payment' %}">
+            <button>
+                Go Premium to Listen to This Episode
+            </button>
+        </a>
+        {% endif %}
+    </div>
 </div>
+
+</body>
+</html>

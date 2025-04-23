@@ -1,189 +1,237 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}BanglaCast{% endblock %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BanglaCast</title>
 
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap & Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Jost', sans-serif;
+      background-color: #0d0d0d;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
 
-    <style>
-        body {
-           margin: 0;
-           padding: 0;
-           min-height: 70vh;
-           font-family: 'Roboto', sans-serif;
-           background-image: url("{% static 'images/cover7.jpg' %}");
-           background-size: cover;
-           background-position: center center;
-           background-attachment: fixed;
-           color: #f1f1f1;
-        }
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #1b2631, #00509E);
+      padding: 30px 15px;
+      text-align: center;
+      color: white;
+    }
 
+    .text-l {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 56px;
+      font-family: 'Pacifico', cursive;
+      color: #00BFFF;
+    }
+    .hero h1 {
+<!--      font-size: 48px;-->
+<!--      margin-bottom: 20px;-->
+<!--    }-->
 
-        .navbar-brand {
-            font-family: 'Pacifico', cursive;
-            color: #5f5fff !important;
-        }
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
 
-        .navbar-nav .nav-link {
-            color: #f1f1f1 !important;
-            font-weight: 500;
-        }
+    .cta-button {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 16px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
 
-        .navbar-nav .nav-link:hover {
-            color: #5f5fff !important;
-        }
+    .cta-button:hover {
+      background-color: #218838;
+    }
 
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 80vh;
-            text-align: center;
-        }
+    /* Filter Buttons */
+    .category-btns {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin: 30px 0;
+    }
 
-        .main-content p {
-            font-size: 56px;
-            font-family: 'Pacifico', cursive;
-        }
+    .category-btns button {
+      background-color: transparent;
+      border: 1px solid #888;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+    }
 
-        .main-content a {
-            margin-top: 20px;
-            font-size: 20px;
-            padding: 10px 25px;
-            background-color: #007bff;
-            border-radius: 25px;
-            color: white;
-            text-decoration: none;
-            transition: 0.3s;
-        }
+    .category-btns button:hover {
+      background-color: #00509E;
+    }
 
-        .main-content a:hover {
-            background-color: #0056b3;
-            text-decoration: none;
-            color: #fff;
-        }
+    /* Episode Cards */
+    .main-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
 
-        .p {
-           text-align: center;
-           padding: 80px 20px;
-        }
-        .p h1 {
-           font-size: 3rem;
-           font-weight: 700;
-           color: white;
-           margin-bottom: 20px;
-        }
+    .card {
+      background-color: #1b2631;
+      color: white;
+      width: 220px;
+      margin: 15px;
+      border-radius: 15px;
+      overflow: hidden;
+      position: relative;
+      transition: 0.3s;
+    }
 
-         .p p {
-            font-size: 1.2rem;
-            color: white;
-            margin-bottom: 30px;
-         }
+    .card:hover {
+      background: linear-gradient(135deg, #1b2631, #00509E);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
 
-         .p img {
-            width: 100%;
-            max-width: 400px;  /* সর্বোচ্চ আকার */
-            height: auto;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-         }
+    .card-img-top {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
 
-         .p img:hover {
-             transform: scale(1.05);  /* ইমেজ হোভার করলে একটু বড় হবে */
-         }
+    .card-body {
+      padding: 10px;
+    }
 
-      /* Responsive Styles */
-          @media (max-width: 768px) {
-          .p h1 {
-             font-size: 2rem;
-          }
+    .card-title {
+      font-weight: bold;
+      font-size: 18px;
+    }
 
-           .p p {
-              font-size: 1rem;
-           }
+    .card-subtitle {
+      font-size: 13px;
+      color: #aaa;
+    }
 
-           .p img {
-               max-width: 100%;
-           }
-          }
+    .card-meta {
+      font-size: 12px;
+      color: #ccc;
+    }
 
+    .btn-play {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: #28a745;
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: 0.3s;
+    }
 
-    </style>
+    .card:hover .btn-play {
+      opacity: 1;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #111;
+      color: #ccc;
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    .social-icons a {
+      color: white;
+      margin: 0 10px;
+      font-size: 20px;
+    }
+
+    .social-icons a:hover {
+      color: #28a745;
+    }
+
+    @media(max-width: 768px) {
+      .card {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">BanglaCast</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="">About Us</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="signupDropdown" role="button" data-toggle="dropdown">
-                    Sign Up
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{% url 'signUpCreator'  %}">Creator</a>
-                    <a class="dropdown-item" href="{% url 'signUpListener'  %}">Listener</a>
-                </div>
-            </li>
-
-            {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logOut' %}">Log Out</a>
-                </li>
-                <li class="nav-item">
-                    <span class="navbar-text ml-2">{{ request.user.username }}</span>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                </li>
-            {% endif %}
-        </ul>
+  <!-- Hero Section -->
+  <section class="hero">
+     <div class="text-l">
+       <i class="fas fa-podcast"></i> BanglaCast
     </div>
-</nav>
+    <p>Your Exclusive Hub for Bengali Podcasts — Discover, Listen, and Create Your Own</p>
+    <!-- Temporarily hardcoded link to test -->
+        <a href="{% url 'loginUser' %}" class="cta-button">Get Started</a>
 
-<!-- Main Welcome Section -->
+  </section>
 
-<section class="p">
-    <h1 class="display-4">🎙️ BanglaCast</h1>
-    <p class="lead">বাংলা ভাষায় প্রথম প্রিমিয়াম পডকাস্ট প্ল্যাটফর্ম।</p>
-    <a href="{% url 'Explore' %}" class="btn btn-primary btn-lg mt-3"> Explore</a>
+  <!-- Filter Buttons -->
+  <div class="text-center mt-4">
+  <p style="color:#aaa;">Popular Categories: <span style="color:#28a745;">Politics</span>, <span style="color:#28a745;">Business</span>, <span style="color:#28a745;">Storytelling</span></p>
+    <p class="text-center">Listen to the most popular Podcast this week</p>
+</div>
 
-</section>
-<!--<div>-->
-<!--    <a href="{% url 'Explore' %}" class="btn btn-primary btn-lg mt-3">🔍 Explore</a>-->
-<!--</div>-->
 
-<!-- Page Content Block -->
-{% block body %}
-{% endblock %}
 
-<!-- JS Scripts -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 
-{% block javascript %}
-{% endblock %}
+<!--   Episode Cards-->
+  <div class="main-content">
+    {% for i in episodes %}
+    <div class="card">
+      <img class="card-img-top" src="{{ i.image.url }}" alt="Episode Image">
+      <div class="card-body">
+        <h5 class="card-title">{{ i.Title }}</h5>
+        <h6 class="card-subtitle">{{ i.Artist }}</h6>
+        <p class="card-meta">{{ i.Type }}</p>
+        <a href="{% url 'player' i.id %}" class="btn-play" title="Play Episode"><i class="fas fa-play"></i></a>
+        {% if request.user.profile.is_creator %}
+        <a href="{% url 'delete_epi' i.id %}" class="btn btn-danger btn-sm mt-2">Delete</a>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center">No episodes available.</p>
+    {% endfor %}
+  </div>
 
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 BanglaCast. All Rights Reserved.</p>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+    </div>
+    <p><a href="/about" style="color:#28a745;">About</a> | <a href="/contact" style="color:#28a745;">Contact</a></p>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

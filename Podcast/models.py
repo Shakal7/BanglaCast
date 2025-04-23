@@ -11,6 +11,14 @@ class Playlist(models.Model):
     Artist = models.CharField(max_length=200, blank=True, null=True)
     Type = models.CharField(max_length=200, blank=True, null=True)
     image = models.ImageField(upload_to='images', blank=True, null=True, default='images/default.jpg')
+    category = models.CharField(max_length=100, choices=[
+        ('education', 'Education'),
+        ('business', 'Business'),
+        ('story', 'Story'),
+        ('Live', 'Live'),
+        ('Sports', 'Sports'),
+        ('Politics', 'Politics'),
+    ])
 
     def __str__(self):
         return self.name
@@ -24,6 +32,16 @@ class Episode(models.Model):
     audio_files = models.FileField(upload_to='images', blank=True, null=True)
     is_premium = models.BooleanField(default=False)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, related_name='episodes', null=True, blank=True)
+    category = models.CharField(max_length=50, choices=[
+        ('Story', 'Story'),
+        ('Sports', 'Sports'),
+        ('Education', 'Education'),
+        ('Business', 'Business'),
+        ('Politics', 'Politics'),
+        ('Live', 'Live'),
+    ])
+    date_added = models.DateTimeField(auto_now_add=True)
+    plays = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.Title

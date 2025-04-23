@@ -15,44 +15,103 @@ from .forms import *
 
 
 def First_page(request):
-    return render(request, template_name='PodCast/First_page.html')
+    # Fetch recent episodes excluding premium ones
+    recent = list(Episode.objects.filter(is_premium=False).order_by('-date_added')[:7])
+
+    # Fetch popular episodes excluding premium ones
+    popular = list(Episode.objects.filter(is_premium=False).order_by('-plays')[:3])
+
+    # Combine recent and popular episodes while avoiding duplicates
+    combined = recent.copy()
+    for ep in popular:
+        if ep not in combined:
+            combined.append(ep)
+
+    # Limit the episodes to show to 10
+    episodes_to_show = combined[:10]
+
+    # Pass the episodes to the template
+    context = {
+        'episodes': episodes_to_show
+    }
+
+    return render(request, 'PodCast/First_page.html', context)
 
 
-def Explore(request):
-    playlists = Playlist.objects.all()
-    return render(request, 'PodCast/Explore.html', {'playlists': playlists})
+# def Explore(request):
+#     episodes = Episode.objects.filter(is_premium=False)
+#     return render(request, 'PodCast/Explore.html', {
+#         'episodes': episodes
+#     })
+
+
+def create_playlist(request):
+    if request.method == 'POST':
+        form = PlaylistForm(request.POST, request.FILES)
+        if form.is_valid():
+            playlist = form.save()
+
+            return redirect('home')
+    else:
+        form = PlaylistForm()
+    return render(request, 'PodCast/create_playlist.html', {'form': form})
+
+
+
+
+
+# def update_episode_premium_status(playlist):
+#     episodes = playlist.episodes.order_by('id')
+#     for index, ep in enumerate(episodes):
+#         if index < 2:
+#             ep.is_premium = False
+#         else:
+#             ep.is_premium = True
+#         ep.save()
+
+
+def Playlist_view(request):
+    category = request.GET.get('category')
+
+    if category:
+        playlists = Playlist.objects.filter(category__iexact=category)  # Case-insensitive match
+    else:
+        playlists = Playlist.objects.all()
+
+    return render(request, 'PodCast/playlist_view.html', {'playlists': playlists})
 
 
 def home(request):
-    # If the user is not authenticated, redirect them to the login page
     if not request.user.is_authenticated:
         return redirect('msg')
 
-    # Ensure the user has a profile
     if not hasattr(request.user, 'profile'):
         Profile.objects.create(user=request.user)
 
-    # Get all playlists
     playlists = Playlist.objects.all()
-
-    # Check if the user clicked "More" (pass a query parameter like ?view=all)
     view_all = request.GET.get('view') == 'all'
+    category = request.GET.get('category')  # For filtering
 
-    # Default: show only free episodes
+    # Filter episodes
     episodes = Episode.objects.filter(is_premium=False)
 
-    # Show all episodes if "More" is clicked AND user is premium or creator
+    if category:
+        episodes = episodes.filter(category__iexact=category)
+
     if view_all and (request.user.profile.is_premium or request.user.profile.is_creator):
         episodes = Episode.objects.all()
+        if category:
+            episodes = episodes.filter(category__iexact=category)
 
-    # ✅ Limit to 2 free episodes if user is NOT premium or creator
-    if not (request.user.profile.is_premium or request.user.profile.is_creator):
-        episodes = episodes[:2]
+    # Limit for free user
+    # if not (request.user.profile.is_premium or request.user.profile.is_creator):
+    #     episodes = episodes[:2]
 
     context = {
-        'playlists': playlists,  # For displaying category-wise podcasts
-        'episodes': episodes,  # For home page episode list
+        'playlists': playlists,
+        'episodes': episodes,
         'view_all': view_all,
+        'category': category,
         'is_more_page': False,
     }
 
@@ -61,20 +120,16 @@ def home(request):
 
 def playlist_details(request, id):
     playlist = get_object_or_404(Playlist, id=id)
-    episodes = playlist.episodes.all()  # related_name ব্যবহার করে episode গুলো আনলাম
+    episodes = playlist.episodes.all()
     return render(request, 'PodCast/playlist_details.html', {
         'playlist': playlist,
         'episodes': episodes
     })
 
 
-
-
 def episode_detail(request, id):
     episode = Episode.objects.get(id=id)
     return render(request, 'PodCast/episode_detail.html', {'episode': episode})
-
-
 
 
 def upload_episode(request):
@@ -109,8 +164,6 @@ def upload_episode(request):
     return render(request, 'PodCast/upload_episode.html', context)
 
 
-
-
 def base(request):
     return render(request, 'PodCast/base.html')
 
@@ -129,8 +182,6 @@ def userPage(request):
 
 def ArtistPage(request):
     return render(request, template_name='PodCast/ArtistPage.html')
-
-
 
 
 def delete_epi(request, id):
@@ -207,7 +258,7 @@ def loginUser(request):
                 try:
                     profile = Profile.objects.get(user=user)
                     if profile.is_creator:
-                        return redirect('Creator')  # creator.html er URL name
+                        return redirect('home')  # creator.html er URL name
                     else:
                         return redirect('home')
                 except Profile.DoesNotExist:
@@ -222,7 +273,6 @@ def loginUser(request):
 def logOut(request):
     auth.logout(request)
     return redirect('/')
-
 
 
 @login_required
@@ -341,12 +391,12 @@ def player(request, id):
             is_premium_user = profile.is_premium
 
     # Can play logic
-    can_play = (player_index <= 2) or is_premium_user
+    # can_play = (player_index <= 2) or is_premium_user
 
     context = {
         'player': player,
-        'can_play': can_play,
-        'is_premium': is_premium_user,
+        # 'can_play': can_play,
+        'is_premium_user': is_premium_user,
         'player_index': player_index,
     }
     return render(request, 'PodCast/audio.html', context=context)
