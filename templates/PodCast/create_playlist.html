@@ -2,17 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Create Playlist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-     {% block content %}
-  <h2>Create New Playlist</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" onclick="createPlaylist()">Create Playlist</button>
+<body class="bg-[#0f0f0f] min-h-screen flex items-center justify-center text-white font-sans">
 
-  </form>
-{% endblock %}
+    <div class="bg-[#1a1a1a] p-10 rounded-2xl shadow-2xl w-full max-w-lg border border-gray-700">
+        <h2 class="text-3xl font-bold mb-6 text-center text-emerald-400 drop-shadow-sm">🎧 Create New Playlist</h2>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-5">
+            {% csrf_token %}
+
+            <!-- Loop through Django form fields -->
+            {% for field in form %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <p class="text-sm text-red-500 mt-1">{{ field.errors }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit"
+                    class="w-full bg-emerald-500 hover:bg-emerald-600 transition duration-300 text-black font-semibold py-2 px-4 rounded-lg shadow-md">
+                + Create Playlist
+            </button>
+        </form>
+    </div>
+
+    <!-- Tailwind Utility Styles for Inputs -->
+    <style>
+        input[type="text"],
+        input[type="file"],
+        textarea,
+        select {
+            @apply w-full px-4 py-2 rounded-lg bg-[#2a2a2a] text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition;
+        }
+
+        select option {
+            background-color: #1f1f1f;
+            color: white;
+        }
+
+        select:focus option {
+            background-color: #272727;
+        }
+    </style>
+
 </body>
 </html>

@@ -249,17 +249,19 @@
       <li class="nav-item active"><a class="nav-link" href="#">Home</a></li>
       <li class="nav-item active"><a class="nav-link" href="#">About Us</a></li>
 
+
       {% if user.is_authenticated %}
+
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'logOut' %}">Logout</a>
-      </li>
-      <li class="nav-item">
-        <p class="nav-link mb-0">
+        <a href="{% url 'profile' %}" class="nav-link mb-0">
           {{ request.user.username }}
           {% if request.user.profile.is_premium %}
             <span class="badge bg-warning text-dark ms-2">Premium</span>
           {% endif %}
-        </p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'logOut' %}">Logout</a>
       </li>
       {% else %}
       <li class="nav-item">
@@ -324,19 +326,18 @@
 {% endif %}
 
   {% if request.user.profile.is_creator %}
-    <a href="{% url 'upload_episode' %}" class="btn btn-primary">Add Episode</a>
+    <a href="{% url 'upload_episode' %}" class="btn btn-primary">Add Podcast</a>
     <a href="{% url 'create_playlist' %}" class="btn btn-secondary">Add Playlist</a>
   {% endif %}
 </div>
 
 <!-- Premium Upgrade Box -->
-<div class="upgrade-box">
-  <strong>Upgrade to Premium</strong>
-  <p>Get unlimited access to all episodes and features.</p>
-    <button class="upgrade-btn" onclick="location.href='/mock_payment'">Upgrade Now</button>
-
-
-</div>
+{% if request.user.is_authenticated and not request.user.profile.is_premium and not request.user.profile.is_creator %}
+  <div class="upgrade-box">
+    <p><strong>Upgrade to Premium</strong> to enjoy unlimited access and exclusive features!</p>
+    <a href="{% url 'premium' %}" class="upgrade-btn">Upgrade Now</a>
+  </div>
+{% endif %}
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

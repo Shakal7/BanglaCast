@@ -57,9 +57,6 @@ def create_playlist(request):
     return render(request, 'PodCast/create_playlist.html', {'form': form})
 
 
-
-
-
 # def update_episode_premium_status(playlist):
 #     episodes = playlist.episodes.order_by('id')
 #     for index, ep in enumerate(episodes):
@@ -211,6 +208,11 @@ def index(request):
     return render(request, 'PodCast/index.html', context)
 
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from .models import Profile
+
+
 def signUpListener(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -218,12 +220,13 @@ def signUpListener(request):
         password = request.POST['password']
         confirmPassword = request.POST['confirmPassword']
         if password == confirmPassword and len(password) >= 3:
-            user = User.objects.create_user(email=email, username=username, password=password)
+            user = User.objects.create_user(username=username, password=password)
+            user.email = email
             user.save()
+            profile = Profile.objects.create(user=user, is_creator=False)
+            profile.save()
             return redirect('/')
-
-    # return redirect('login')
-    return render(request, 'PodCast/signup.html')
+    return render(request, 'PodCast/signup.html', {'is_creator': False})
 
 
 def signUpCreator(request):
@@ -233,14 +236,18 @@ def signUpCreator(request):
         password = request.POST['password']
         confirmPassword = request.POST['confirmPassword']
         if password == confirmPassword and len(password) >= 3:
-            user = User.objects.create_user(email=email, username=username, password=password)
+            user = User.objects.create_user(username=username, password=password)
+            user.email = email
             user.save()
-            profile = Profile.objects.create(user=user, is_creator=True)
+
+            # Subscription plan only for Creator
+            subscription_plan = request.POST.get('subscription_plan', '')
+
+            profile = Profile.objects.create(user=user, is_creator=True, subscription_plan=subscription_plan)
             profile.save()
             return redirect('/')
 
-    # return redirect('login')
-    return render(request, 'PodCast/signup.html')
+    return render(request, 'PodCast/signup.html', {'is_creator': True})
 
 
 def loginUser(request):
@@ -267,7 +274,32 @@ def loginUser(request):
             else:
                 print("Invalid credentials!")
 
-        return render(request, 'podcast/login.html')
+        return render(request, 'PodCast/login.html')
+
+
+def profileView(request):
+    user = request.user
+    try:
+        profile = Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        profile = None
+
+    context = {
+        'user': user,
+        'profile': profile
+    }
+    return render(request, 'PodCast/profile.html', context)
+
+
+def edit_profile(request):
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = UserChangeForm(instance=request.user)
+    return render(request, 'edit_profile.html', {'form': form})
 
 
 def logOut(request):
